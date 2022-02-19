@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE datafile PUBLIC "-//Logiqx//DTD ROM Management Datafile//EN" "http://www.logiqx.com/Dats/datafile.dtd">
+<datafile>
+	<header>
+		<name>Sony - PlayStation</name>
+		<description>Sony - PlayStation - Discs (10637) (2022-02-10 20-48-02)</description>
+		<version>2022-02-10 20-48-02</version>
+		<date>2022-02-10 20-48-02</date>
+		<author>redump.org</author>
+		<homepage>redump.org</homepage>
+		<url>http://redump.org/</url>
+	</header>
+	<game name="Ace Combat 3 - Electrosphere (Europe) (En,Fr,De,Es,It)">
+		<category>Games</category>
+		<description>Ace Combat 3 - Electrosphere (Europe) (En,Fr,De,Es,It)</description>
+		<rom name="Ace Combat 3 - Electrosphere (Europe) (En,Fr,De,Es,It).cue" size="120" crc="92b3ff37" md5="56125070a7f679f547133512543a3585" sha1="5cc0e2d25792ae13ec7dab7b2ee8974c700c3337"/>
+		<rom name="Ace Combat 3 - Electrosphere (Europe) (En,Fr,De,Es,It).bin" size="470999760" crc="91cad2df" md5="24c2f5a5e43e4bc4c41081f5ef4dc818" sha1="8c215d983ad7d7f5f8aa122981cbd79d846532ec"/>
+	</game>
+	<game name="Bio Hazard (Japan) (Rev 1)">
+		<category>Games</category>
+		<description>Bio Hazard (Japan) (Rev 1)</description>
+		<rom name="Bio Hazard (Japan) (Rev 1).cue" size="92" crc="26325154" md5="9bc919cc76fdf3c210eb86f0ec7b05d1" sha1="1550ad70fee32e80ab603b55a38884d8f615c346"/>
+		<rom name="Bio Hazard (Japan) (Rev 1).bin" size="736836912" crc="905e51e9" md5="9b60af7d1359d708fec08e7be965f243" sha1="ac2bbd66108a22e634e54560058195214802c95a"/>
+	</game>
+	<game name="Biohazard 3 - Last Escape (Japan)">
+		<category>Games</category>
+		<description>Biohazard 3 - Last Escape (Japan)</description>
+		<rom name="Biohazard 3 - Last Escape (Japan).cue" size="99" crc="df12c58e" md5="5e5646b191383ddb03cc64890dc9505f" sha1="45d5227880b749981acc69bf88d6fbe1ac23b964"/>
+		<rom name="Biohazard 3 - Last Escape (Japan).bin" size="720363504" crc="a8e01b4d" md5="bb5bf5613176e37bbbb6c2449e2a5c8f" sha1="59bcda99cceecd96fcaad662a5691094ec76f2a7"/>
+	</game>
+ </datafile>
+  
