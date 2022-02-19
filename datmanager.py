@@ -13,7 +13,7 @@ import configparser
 
 
 class Config:
-    def __init__(self,appdir):
+    def __init__(self, appdir):
         self.appdir = appdir
         self.config = configparser.ConfigParser()
         self.config.read(os.path.join(appdir, 'data/config.ini'))
@@ -74,7 +74,6 @@ class Romfiles:
         cursor.execute(query, (self.matchcode,))
         result = cursor.fetchone()
         self.indb = result[0]
-        print("ch")
         return self.indb
 
     def writetodb(self):
@@ -83,6 +82,14 @@ class Romfiles:
         query = "INSERT INTO dtdrm_files (rom_id, name, filename, type, size, crc, md5, sha1, matchcode) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
         values = (self.rom_id, self.name, self.filename, self.type, self.size, self.crc, self.md5, self.sh1,
                   self.matchcode)
+        cursor.execute(query, values)
+        DB.mysqlcon.commit()
+
+    def deleteindbbymatchcode(self):
+        global DB
+        cursor = DB.mysqlcon.cursor()
+        query = """Delete from dtdrm_files where matchcode = %s"""
+        values = (self.matchcode)
         cursor.execute(query, values)
         DB.mysqlcon.commit()
 
@@ -99,6 +106,8 @@ class Rom:
         else:
             self.romfiles = romfile
         self.rom_id = None
+        self.indb = None
+        self.existsindb()
 
     def writetodb(self):
         global DB
@@ -109,6 +118,28 @@ class Rom:
         DB.mysqlcon.commit()
         self.rom_id = cursor.lastrowid
         return self.rom_id
+
+    def existsindb(self):
+        global DB
+        cursor = DB.mysqlcon.cursor()
+        query = """SELECT if(COUNT(dtdrm_rom.matchcode)>=1,TRUE,FALSE) FROM dtdrm_rom WHERE dtdrm_rom.matchcode = %s"""
+        cursor.execute(query, (self.matchcode,))
+        result = cursor.fetchone()
+        self.indb = result[0]
+        return self.indb
+
+    def deleteindbbymatchcode(self):
+        self.deleteallromfilesindb()
+        global DB
+        cursor = DB.mysqlcon.cursor()
+        query = """Delete from dtdrm_rom where matchcode = %s"""
+        values = (self.matchcode)
+        cursor.execute(query, values)
+        DB.mysqlcon.commit()
+
+    def deleteallromfilesindb(self):
+        for romfile in self.romfiles:
+            romfile.deleteindbbymatchcode()
 
     def add_romfile(self, romfile):
         if romfile not in self.romfiles:
@@ -151,6 +182,8 @@ class RomSystem:
             self.roms = []
         else:
             self.roms = roms
+        self.indb = None
+        self.existsindb()
 
     def writetodb(self):
         global DB
@@ -162,6 +195,19 @@ class RomSystem:
         self.sys_id = cursor.lastrowid
         return self.sys_id
 
+    def deleteindbbyname(self):
+        self.deleteallromsindb()
+        global DB
+        cursor = DB.mysqlcon.cursor()
+        query = """Delete from dtdrm_rom where name LIKE %s"""
+        values = (self.name)
+        cursor.execute(query, values)
+        DB.mysqlcon.commit()
+
+    def deleteallromsindb(self):
+        for rom in self.roms:
+            rom.deleteindbbymatchcode()
+
     def add_rom(self, rom):
         if rom not in self.roms:
             self.roms.append(rom)
@@ -169,6 +215,15 @@ class RomSystem:
     def remove_rom(self, rom):
         if rom in self.roms:
             self.roms.remove(rom)
+
+    def existsindb(self):
+        global DB
+        cursor = DB.mysqlcon.cursor()
+        query = """SELECT if(COUNT(dtdrm_sys.id)>=1,TRUE,FALSE) FROM dtdrm_sys WHERE dtdrm_sys.name LIKE %s"""
+        cursor.execute(query, (self.name,))
+        result = cursor.fetchone()
+        self.indb = result[0]
+        return self.indb
 
     @classmethod
     def import_from_xml(cls, root):
@@ -204,6 +259,10 @@ def importdat(file):
 
     ##printProgressBar(0, l, prefix='Progress:', suffix='Complete', length=50)
     i = 0
+    if romsys.indb:
+        print("im sys")
+    else:
+        print("nicht im sys")
     for game in root.findall('game'):
         rom = Rom.import_from_xml(sys_id, game)
         romsys.add_rom(rom)
@@ -213,6 +272,7 @@ def importdat(file):
             romfile = Romfiles.import_from_xml(rom_id, game, romdata, rom.matchcode)
             rom.add_romfile(romfile)
             ### das ist ein Test
+
             if romfile.indb:
                 romfile.writetodb()
             else:
@@ -242,7 +302,6 @@ parser = argparse.ArgumentParser(description='Dat Manager')
 parser.add_argument("-i", "--importdat", dest='importdat', help="for import", action='store_true')
 parser.add_argument("-f", "--file", help="Dat input file", type=argparse.FileType('r'))
 parser.add_argument('--version', action='version', version='%(prog)s 1.0')
-
 
 cfg = Config(appdir)
 DB = DBinit(cfg)
